@@ -26,3 +26,4 @@ To keep the code organized and modular, I'll separate the main responsibilities 
 - **PCA:** Implements the PCA algorithm.
 - **PCAResult:** Stores the results obtained at each step of the PCA algorithm, so they can be displayed step by step.
 - **UI:** Handles the Raylib interface and visualization.
+- **Maths:** Any math helpers will be stored inside math_utils. 
