@@ -9,6 +9,15 @@ class MatrixTests : public ::testing::Test {
   Matrix matrix{2, 2};
 };
 
+// checks ony valid matrix sizes
+TEST_F(MatrixTests, RejectsInvalidDimensions) {
+  // checks invalid dimensions
+  EXPECT_THROW(Matrix matrix(0, 1), std::invalid_argument);
+  EXPECT_THROW(Matrix matrix(1, 0), std::invalid_argument);
+  EXPECT_THROW(Matrix matrix(-1, 1), std::invalid_argument);
+  EXPECT_THROW(Matrix matrix(1, -1), std::invalid_argument);  
+}
+
 // Check that the matrix initializes with the correct dimensions
 TEST_F(MatrixTests, InitializesDimensionsCorrectly) {
   EXPECT_EQ(matrix.Rows(), 2);

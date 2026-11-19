@@ -1,20 +1,33 @@
 #include "matrix.hpp"
 
-Matrix::Matrix(const size_t rows, const size_t cols)
-    : rows_(rows), cols_(cols), data_(rows * cols, 0.0) {}
+#include <stdexcept>
 
-size_t Matrix::Rows() const {
-    return 0;
+Matrix::Matrix(int rows, int cols) {
+    if (rows <= 0 || cols <= 0) {
+        throw std::invalid_argument(
+            "Matrix dimensions must be positive"
+        );
+    }
+
+    rows_ = static_cast<std::size_t>(rows);
+    cols_ = static_cast<std::size_t>(cols);
+
+    data_.resize(rows_ * cols_, 0.0);
 }
 
-size_t Matrix::Cols() const {
-    return 0;
-}
+size_t Matrix::Rows() const { return rows_; }
+
+size_t Matrix::Cols() const { return cols_; }
 
 double& Matrix::operator()(size_t row, size_t col) {
-    return data_[0];
+  if (row >= rows_ || col >= cols_ || row < 0 || col < 0) {
+    throw std::out_of_range("Invalid column or row");
+  }
+  return data_[row * rows_ + col];
 }
-
 const double& Matrix::operator()(size_t row, size_t col) const {
-    return data_[0];
+  if (row >= rows_ || col >= cols_ || row < 0 || col < 0) {
+    throw std::out_of_range("Invalid column or row");
+  }
+  return data_[row * rows_ + col];
 }
