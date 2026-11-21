@@ -14,6 +14,8 @@ class Matrix {
     double& operator()(size_t row, size_t col);
     const double& operator()(size_t row, size_t col) const;
 
+    bool operator==(const Matrix& other) const;
+
 
   private:
     size_t rows_;
