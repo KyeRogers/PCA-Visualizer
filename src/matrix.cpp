@@ -73,3 +73,22 @@ Matrix Matrix::operator*(const Matrix& other) const {
     return result;
   }
 }
+
+Matrix Matrix::operator+(const Matrix& other) const {
+  if (Rows() != other.Rows() || Cols() != other.Cols()) {
+    throw std::invalid_argument("Matrix addition requires same dimensions");
+  } else {
+    Matrix result{static_cast<int>(Rows()), static_cast<int>(Cols())};
+
+    for (int row{0}; row < Rows(); row++) {
+      for (int col{0}; col < Cols(); col++) {
+        result(row, col) = (*this)(row, col) + other(row, col);
+      }
+    }
+    return result;
+  }
+}
+
+Matrix Matrix::operator-(const Matrix& other) const { return Matrix{1, 1}; }
+
+Matrix Matrix::operator*(const double scalar) const { return Matrix{1, 1}; }

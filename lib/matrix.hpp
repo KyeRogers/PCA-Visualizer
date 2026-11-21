@@ -5,27 +5,28 @@
 #include <vector>
 
 class Matrix {
-  public:
-    Matrix(int rows, int cols);
+ public:
+  Matrix(int rows, int cols);
 
-    size_t Rows() const;
-    size_t Cols() const;
-    
-    Matrix Transpose() const;
-    
-    // overloads
-    double& operator()(size_t row, size_t col);
-    const double& operator()(size_t row, size_t col) const;
-    
-    Matrix operator*(const Matrix& other) const;
-    bool operator==(const Matrix& other) const;
+  size_t Rows() const;
+  size_t Cols() const;
 
+  Matrix Transpose() const;
 
+  // overloads
+  double& operator()(size_t row, size_t col);
+  const double& operator()(size_t row, size_t col) const;
 
-  private:
-    size_t rows_;
-    size_t cols_;
-    std::vector<double> data_; 
+  Matrix operator*(const Matrix& other) const;
+  bool operator==(const Matrix& other) const;
+  Matrix operator+(const Matrix& other) const;
+  Matrix operator-(const Matrix& other) const;
+  Matrix operator*(double scalar) const;
+
+ private:
+  size_t rows_;
+  size_t cols_;
+  std::vector<double> data_;
 };
 
 #endif

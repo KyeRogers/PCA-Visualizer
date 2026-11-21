@@ -278,3 +278,116 @@ TEST(MatrixMultiplicationTests, PreservesOperands) {
     EXPECT_EQ(A, originalA);
     EXPECT_EQ(B, originalB);
 }
+
+TEST(MatrixAdditionTests, AddsElementsCorrectly) {
+    Matrix A{2, 2};
+    A(0, 0) = 1.0;
+    A(0, 1) = -2.0;
+    A(1, 0) = 3.0;
+    A(1, 1) = 4.0;
+
+    Matrix B{2, 2};
+    B(0, 0) = 5.0;
+    B(0, 1) = 6.0;
+    B(1, 0) = -3.0;
+    B(1, 1) = 2.0;
+
+    Matrix expected{2, 2};
+    expected(0, 0) = 6.0;
+    expected(0, 1) = 4.0;
+    expected(1, 0) = 0.0;
+    expected(1, 1) = 6.0;
+
+    EXPECT_EQ(A + B, expected);
+}
+
+TEST(MatrixAdditionTests, AddingZeroPreservesMatrix) {
+    Matrix A{2, 3};
+    A(0, 0) = 1.0;
+    A(1, 2) = -4.0;
+
+    Matrix zero{2, 3};
+
+    EXPECT_EQ(A + zero, A);
+}
+
+TEST(MatrixAdditionTests, RejectsDifferentDimensions) {
+    Matrix A{2, 3};
+    Matrix B{3, 2};
+
+    EXPECT_THROW(A + B, std::invalid_argument);
+}
+
+TEST(MatrixSubtractionTests, SubtractsElementsCorrectly) {
+    Matrix A{2, 2};
+    A(0, 0) = 5.0;
+    A(0, 1) = 3.0;
+    A(1, 0) = -2.0;
+    A(1, 1) = 8.0;
+
+    Matrix B{2, 2};
+    B(0, 0) = 2.0;
+    B(0, 1) = 5.0;
+    B(1, 0) = 4.0;
+    B(1, 1) = 3.0;
+
+    Matrix expected{2, 2};
+    expected(0, 0) = 3.0;
+    expected(0, 1) = -2.0;
+    expected(1, 0) = -6.0;
+    expected(1, 1) = 5.0;
+
+    EXPECT_EQ(A - B, expected);
+}
+
+TEST(MatrixSubtractionTests, SubtractingSelfProducesZero) {
+    Matrix A{2, 3};
+    A(0, 0) = 4.0;
+    A(0, 2) = -3.0;
+    A(1, 1) = 7.0;
+
+    Matrix zero{2, 3};
+
+    EXPECT_EQ(A - A, zero);
+}
+
+TEST(MatrixSubtractionTests, RejectsDifferentDimensions) {
+    Matrix A{2, 3};
+    Matrix B{2, 4};
+
+    EXPECT_THROW(A - B, std::invalid_argument);
+}
+
+TEST(MatrixScalarTests, MultipliesEveryElement) {
+    Matrix A{2, 2};
+    A(0, 0) = 1.0;
+    A(0, 1) = -2.0;
+    A(1, 0) = 3.0;
+    A(1, 1) = 4.0;
+
+    Matrix expected{2, 2};
+    expected(0, 0) = 2.5;
+    expected(0, 1) = -5.0;
+    expected(1, 0) = 7.5;
+    expected(1, 1) = 10.0;
+
+    EXPECT_EQ(A * 2.5, expected);
+}
+
+TEST(MatrixScalarTests, MultiplicationByZeroProducesZero) {
+    Matrix A{2, 3};
+    A(0, 0) = 3.0;
+    A(1, 2) = -5.0;
+
+    Matrix zero{2, 3};
+
+    EXPECT_EQ(A * 0.0, zero);
+}
+
+TEST(MatrixScalarTests, MultiplicationByOnePreservesMatrix) {
+    Matrix A{2, 3};
+    A(0, 0) = 3.0;
+    A(1, 2) = -5.0;
+
+    EXPECT_EQ(A * 1.0, A);
+}
