@@ -61,7 +61,7 @@ Matrix Matrix::operator*(const Matrix& other) const {
     throw std::invalid_argument(
         "Matrix mutiplication impossible, must be m x n * n x p");
   } else {
-    Matrix result{static_cast<size_t>(Rows()), static_cast<int>(other.Cols())};
+    Matrix result{static_cast<int>(Rows()), static_cast<int>(other.Cols())};
 
     for (size_t i{0}; i < result.Rows(); i++) {
       for (size_t k{0}; k < Cols(); k++) {
@@ -104,4 +104,13 @@ Matrix Matrix::operator-(const Matrix& other) const {
   }
 }
 
-Matrix Matrix::operator*(const double scalar) const { return Matrix{1, 1}; }
+Matrix Matrix::operator*(const double scalar) const {
+  Matrix result{static_cast<int>(Rows()), static_cast<int>(Cols())};
+
+  for (int row{0}; row < Rows(); row++) {
+    for (int col{0}; col < Cols(); col++) {
+      result(row, col) = (*this)(row, col) * scalar;
+    }
+  }
+  return result;
+}
