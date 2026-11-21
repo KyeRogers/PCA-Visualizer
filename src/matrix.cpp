@@ -44,8 +44,8 @@ bool Matrix::operator==(const Matrix& other) const {
   constexpr double epsilon = 1e-10;
   if (Rows() == other.Rows() && Cols() == other.Cols()) {
     // check elements
-    for (int row{0}; row < Rows(); row++) {
-      for (int column{0}; column < Cols(); column++) {
+    for (size_t row{0}; row < Rows(); row++) {
+      for (size_t column{0}; column < Cols(); column++) {
         if (std::abs((*this)(row, column) - other(row, column)) > epsilon)
           return false;
       }
@@ -55,4 +55,21 @@ bool Matrix::operator==(const Matrix& other) const {
   return false;
 }
 
+Matrix Matrix::operator*(const Matrix& other) const {
+  // check multiplication can be done
+  if (Cols() != other.Rows()) {
+    throw std::invalid_argument(
+        "Matrix mutiplication impossible, must be m x n * n x p");
+  } else {
+    Matrix result{static_cast<size_t>(Rows()), static_cast<int>(other.Cols())};
 
+    for (size_t i{0}; i < result.Rows(); i++) {
+      for (size_t k{0}; k < Cols(); k++) {
+        for (size_t j{0}; j < result.Cols(); j++) {
+          result(i, j) += (*this)(i, k) * other(k, j);
+        }
+      }
+    }
+    return result;
+  }
+}

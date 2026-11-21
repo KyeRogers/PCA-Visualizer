@@ -12,11 +12,12 @@ class Matrix {
     size_t Cols() const;
     
     Matrix Transpose() const;
-
+    
     // overloads
     double& operator()(size_t row, size_t col);
     const double& operator()(size_t row, size_t col) const;
-
+    
+    Matrix operator*(const Matrix& other) const;
     bool operator==(const Matrix& other) const;
 
 
