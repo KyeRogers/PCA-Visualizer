@@ -75,22 +75,99 @@ TEST(MatrixOverloadTests, CheckEqualsComparison) {
 
 }
 
-// TEST(MatrixTransposeTests, TransposeRectangular) {
-//   Matrix matrix{2, 3};
-//   matrix(0, 0) = 1;
-//   matrix(0, 1) = 2;
-//   matrix(0, 2) = 3;
-//   matrix(1, 0) = 4;
-//   matrix(1, 1) = 5;
-//   matrix(1, 2) = 6;
+// Verify transposition of a rectangular 2x3 matrix
+TEST(MatrixTransposeTests, TransposeRectangular) {
+    Matrix matrix{2, 3};
+    matrix(0, 0) = 1.0;
+    matrix(0, 1) = 2.0;
+    matrix(0, 2) = 3.0;
+    matrix(1, 0) = 4.0;
+    matrix(1, 1) = 5.0;
+    matrix(1, 2) = 6.0;
 
-//   // test transpose
-//   Matrix transposed = matrix.transpose();
-//   ASSERT_EQ(transposed.Rows(), 3);
-//   ASSERT_EQ(transposed.Cols(), 2);
+    Matrix expected{3, 2};
+    expected(0, 0) = 1.0;
+    expected(0, 1) = 4.0;
+    expected(1, 0) = 2.0;
+    expected(1, 1) = 5.0;
+    expected(2, 0) = 3.0;
+    expected(2, 1) = 6.0;
 
-//   EXPECT_EQ(matrix(0, 1), transposed(1, 0));
-//   EXPECT_EQ(matrix(1, 2), transposed(2, 1));
-//   EXPECT_EQ(matrix(0, 2), transposed(2, 0));
-//   EXPECT_EQ(matrix(0, 0), transposed(0, 0));
-// }
+    EXPECT_EQ(matrix.Transpose(), expected);
+}
+
+// Verify transposition of a square 3x3 matrix
+TEST(MatrixTransposeTests, TransposeSquare) {
+    Matrix matrix{3, 3};
+    matrix(0, 0) = 1.0;
+    matrix(0, 1) = 2.0;
+    matrix(0, 2) = 3.0;
+    matrix(1, 0) = 4.0;
+    matrix(1, 1) = 5.0;
+    matrix(1, 2) = 6.0;
+    matrix(2, 0) = 7.0;
+    matrix(2, 1) = 8.0;
+    matrix(2, 2) = 9.0;
+
+    Matrix expected{3, 3};
+    expected(0, 0) = 1.0;
+    expected(0, 1) = 4.0;
+    expected(0, 2) = 7.0;
+    expected(1, 0) = 2.0;
+    expected(1, 1) = 5.0;
+    expected(1, 2) = 8.0;
+    expected(2, 0) = 3.0;
+    expected(2, 1) = 6.0;
+    expected(2, 2) = 9.0;
+
+    EXPECT_EQ(matrix.Transpose(), expected);
+}
+
+// Verify a row vector becomes a column vector
+TEST(MatrixTransposeTests, TransposeRowVector) {
+    Matrix matrix{1, 4};
+    matrix(0, 0) = 1.0;
+    matrix(0, 1) = 2.0;
+    matrix(0, 2) = 3.0;
+    matrix(0, 3) = 4.0;
+
+    Matrix expected{4, 1};
+    expected(0, 0) = 1.0;
+    expected(1, 0) = 2.0;
+    expected(2, 0) = 3.0;
+    expected(3, 0) = 4.0;
+
+    EXPECT_EQ(matrix.Transpose(), expected);
+}
+
+// Verify that transposing twice restores the original matrix
+TEST(MatrixTransposeTests, TransposeTwiceRestoresOriginal) {
+    Matrix matrix{2, 3};
+    matrix(0, 0) = 1.0;
+    matrix(0, 1) = 2.0;
+    matrix(0, 2) = 3.0;
+    matrix(1, 0) = 4.0;
+    matrix(1, 1) = 5.0;
+    matrix(1, 2) = 6.0;
+
+    EXPECT_EQ(matrix.Transpose().Transpose(), matrix);
+}
+
+// Verify transposition does not modify the original matrix
+TEST(MatrixTransposeTests, TransposePreservesOriginal) {
+    Matrix matrix{2, 3};
+    matrix(0, 0) = 1.0;
+    matrix(0, 1) = 2.0;
+    matrix(0, 2) = 3.0;
+    matrix(1, 0) = 4.0;
+    matrix(1, 1) = 5.0;
+    matrix(1, 2) = 6.0;
+
+    Matrix original = matrix;
+
+    Matrix transposed = matrix.Transpose();
+
+    EXPECT_EQ(matrix, original);
+    EXPECT_EQ(transposed.Rows(), 3);
+    EXPECT_EQ(transposed.Cols(), 2);
+}

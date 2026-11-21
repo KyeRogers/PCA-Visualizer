@@ -10,11 +10,15 @@ class Matrix {
 
     size_t Rows() const;
     size_t Cols() const;
+    
+    Matrix Transpose() const;
 
+    // overloads
     double& operator()(size_t row, size_t col);
     const double& operator()(size_t row, size_t col) const;
 
     bool operator==(const Matrix& other) const;
+
 
 
   private:

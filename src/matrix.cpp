@@ -17,6 +17,16 @@ size_t Matrix::Rows() const { return rows_; }
 
 size_t Matrix::Cols() const { return cols_; }
 
+Matrix Matrix::Transpose() const {
+  Matrix transposed{static_cast<int>(Cols()), static_cast<int>(Rows())};
+  for (int row{0}; row < Rows(); row++) {
+    for (int col{0}; col < Cols(); col++) {
+      transposed(col, row) = (*this)(row, col);
+    }
+  }
+  return transposed;
+}
+
 double& Matrix::operator()(size_t row, size_t col) {
   if (row >= rows_ || col >= cols_ || row < 0 || col < 0) {
     throw std::out_of_range("Invalid column or row");
@@ -44,3 +54,5 @@ bool Matrix::operator==(const Matrix& other) const {
   }
   return false;
 }
+
+
