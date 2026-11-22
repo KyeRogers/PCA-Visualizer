@@ -399,3 +399,128 @@ TEST(ProjectionTests, RejectsIncompatibleDimensions) {
         std::invalid_argument
     );
 }
+
+// Test 1: Reconstruction with the identity basis.
+// The projected coordinates should simply have the means added back.
+TEST(ReconstructionTests, IdentityBasisRestoresMeans) {
+    Matrix projected(2, 2);
+
+    projected(0, 0) = 1.0;
+    projected(0, 1) = 2.0;
+    projected(1, 0) = -1.0;
+    projected(1, 1) = -2.0;
+
+    Matrix eigenvectors(2, 2);
+    eigenvectors(0, 0) = 1.0;
+    eigenvectors(1, 1) = 1.0;
+
+    std::vector<double> means = {5.0, 10.0};
+
+    Matrix reconstructed =
+        ReconstructData(projected, eigenvectors, means);
+
+    ASSERT_EQ(reconstructed.Rows(), 2);
+    ASSERT_EQ(reconstructed.Cols(), 2);
+
+    EXPECT_NEAR(reconstructed(0, 0), 6.0, 1e-9);
+    EXPECT_NEAR(reconstructed(0, 1), 12.0, 1e-9);
+    EXPECT_NEAR(reconstructed(1, 0), 4.0, 1e-9);
+    EXPECT_NEAR(reconstructed(1, 1), 8.0, 1e-9);
+}
+
+// Test 2: Full reconstruction using a rotated orthonormal basis.
+// Keeping both components should recover the original data.
+TEST(ReconstructionTests, FullRotatedBasisRecoversOriginalData) {
+    const double s = 1.0 / std::sqrt(2.0);
+
+    Matrix centeredData(2, 2);
+    centeredData(0, 0) = 2.0;
+    centeredData(0, 1) = 2.0;
+    centeredData(1, 0) = -2.0;
+    centeredData(1, 1) = -2.0;
+
+    Matrix eigenvectors(2, 2);
+    eigenvectors(0, 0) = s;
+    eigenvectors(1, 0) = s;
+    eigenvectors(0, 1) = -s;
+    eigenvectors(1, 1) = s;
+
+    std::vector<double> means = {3.0, 5.0};
+
+    Matrix projected = ProjectData(centeredData, eigenvectors);
+
+    Matrix reconstructed =
+        ReconstructData(projected, eigenvectors, means);
+
+    ASSERT_EQ(reconstructed.Rows(), 2);
+    ASSERT_EQ(reconstructed.Cols(), 2);
+
+    EXPECT_NEAR(reconstructed(0, 0), 5.0, 1e-9);
+    EXPECT_NEAR(reconstructed(0, 1), 7.0, 1e-9);
+    EXPECT_NEAR(reconstructed(1, 0), 1.0, 1e-9);
+    EXPECT_NEAR(reconstructed(1, 1), 3.0, 1e-9);
+}
+
+// Test 3: Reconstruction from only one principal component.
+// The reconstructed observations should lie along PC1.
+TEST(ReconstructionTests, OneComponentReconstruction) {
+    const double s = 1.0 / std::sqrt(2.0);
+
+    // Three observations, each with one PCA coordinate.
+    Matrix projected(3, 1);
+    projected(0, 0) = 2.0 * std::sqrt(2.0);
+    projected(1, 0) = -2.0 * std::sqrt(2.0);
+    projected(2, 0) = 0.0;
+
+    // Only PC1, pointing along (1, 1).
+    Matrix eigenvectors(2, 1);
+    eigenvectors(0, 0) = s;
+    eigenvectors(1, 0) = s;
+
+    std::vector<double> means = {3.0, 5.0};
+
+    Matrix reconstructed =
+        ReconstructData(projected, eigenvectors, means);
+
+    ASSERT_EQ(reconstructed.Rows(), 3);
+    ASSERT_EQ(reconstructed.Cols(), 2);
+
+    EXPECT_NEAR(reconstructed(0, 0), 5.0, 1e-9);
+    EXPECT_NEAR(reconstructed(0, 1), 7.0, 1e-9);
+
+    EXPECT_NEAR(reconstructed(1, 0), 1.0, 1e-9);
+    EXPECT_NEAR(reconstructed(1, 1), 3.0, 1e-9);
+
+    EXPECT_NEAR(reconstructed(2, 0), 3.0, 1e-9);
+    EXPECT_NEAR(reconstructed(2, 1), 5.0, 1e-9);
+}
+
+// Test 4: The number of projected components must match
+// the number of eigenvector columns.
+TEST(ReconstructionTests, RejectsIncompatibleDimensions) {
+    Matrix projected(5, 2);
+    Matrix eigenvectors(2, 1);
+
+    std::vector<double> means = {0.0, 0.0};
+
+    EXPECT_THROW(
+        ReconstructData(projected, eigenvectors, means),
+        std::invalid_argument
+    );
+}
+
+// Test 5: There must be one mean for each original feature.
+TEST(ReconstructionTests, RejectsIncorrectMeanDimensions) {
+    Matrix projected(5, 2);
+
+    Matrix eigenvectors(2, 2);
+    eigenvectors(0, 0) = 1.0;
+    eigenvectors(1, 1) = 1.0;
+
+    std::vector<double> invalidMeans = {3.0};
+
+    EXPECT_THROW(
+        ReconstructData(projected, eigenvectors, invalidMeans),
+        std::invalid_argument
+    );
+}

@@ -23,5 +23,11 @@ EigenResult EigenDecomposeSymmetric2x2(const Matrix& matrix);
 
 Matrix ProjectData(const Matrix& centeredData,
                    const Matrix& eigenvectors);
-                   
+
+Matrix ReconstructData(
+    const Matrix& projectedData,
+    const Matrix& eigenvectors,
+    const std::vector<double>& means
+);
+
 #endif

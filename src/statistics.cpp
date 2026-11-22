@@ -114,7 +114,26 @@ EigenResult EigenDecomposeSymmetric2x2(const Matrix& matrix) {
 // projects centred data ont the PCA components
 Matrix ProjectData(const Matrix& centeredData, const Matrix& eigenvectors) {
   if (centeredData.Cols() != eigenvectors.Rows()) {
-    throw std::invalid_argument("Incorrect dimensions to perform Matrix multiplication");
+    throw std::invalid_argument(
+        "Incorrect dimensions to perform Matrix multiplication");
   }
   return centeredData * eigenvectors;
+}
+
+// transforms pca projected data back into the original
+Matrix ReconstructData(const Matrix& projectedData, const Matrix& eigenvectors,
+                       const std::vector<double>& means) {
+  if (projectedData.Cols() != eigenvectors.Cols() || eigenvectors.Rows() != means.size()) {
+    throw std::invalid_argument(
+        "Incorrect dimensions for matrix data reconstruction");
+  }
+
+  Matrix result = projectedData * eigenvectors.Transpose();
+  for (size_t col{0}; col < result.Cols(); col++) {
+    for (size_t row{0}; row < result.Rows(); row++) {
+      result(row, col) += means[col];
+    }
+  }
+
+  return result;
 }
