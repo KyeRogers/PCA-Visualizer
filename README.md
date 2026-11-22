@@ -1,90 +1,53 @@
 # PCA Visualizer
 
-A Principal Component Analysis (PCA) visualizer built entirely in C++ using Raylib.
+A step-by-step **Principal Component Analysis (PCA) visualizer** built in C++17 using Raylib.
 
-## Goal of the Project
+## About
 
-The goal of this project is to learn the fundamentals of PCA, its applications, and the mathematics behind the matrix operations involved.
+I started this project to understand the mathematics behind PCA rather than relying on an existing library. My goal is to implement the algorithm from scratch and visualize each stage to make it easier to understand.
 
-I want to understand how the algorithm works internally, rather than simply using an existing PCA library. To achieve this, I'll implement the algorithm myself and build a step-by-step visualizer that shows each stage of the process, hopefully making it easier for others to understand as well.
+I'm also using this project to learn **GoogleTest**, practice test-driven development (TDD), and improve how I structure and test my code.
 
-In order to improve my software engineering skills i will also be learning tehe testing framework **GoogleTest**, and implementing the project following TDD.
+**Note:** I'm using AI to help build the Raylib interface and handle some boilerplate. The mathematics, PCA implementation, and core logic are written by me.
 
-**Note:** I won't be implementing the Raylib UI entirely by hand. I'll use AI to help with the interface and some of the boilerplate code. The underlying mathematics, PCA implementation, and core logic will be written by me.
+## What's Implemented
 
-## Planned Features
+- Custom `Matrix` class with the necessary matrix operations.
+- Data centering and covariance matrix calculation.
+- Eigendecomposition of symmetric 2×2 matrices.
+- Projection onto one or two principal components.
+- Reconstruction of the original data from PCA coordinates.
+- `PCA` class that brings the mathematical operations together.
+- GoogleTest unit tests for the mathematical backend.
+- Raylib interface for visualizing the PCA process step by step.
+- CSV loading for custom datasets.
 
-- CSV file loading, allowing users to experiment with their own datasets.
-- Support for an arbitrary number of features, with data visualized on a 2D plane.
-- A step-by-step view of the PCA algorithm, explaining what happens at each stage.
-- Visualization of important intermediate results, such as the covariance matrix, eigenvalues, eigenvectors, and explained variance.
+Currently, the implementation supports **2D datasets with one or two principal components**.
 
-## Initial Project Structure
+## Project Structure
 
-To keep the code organized and modular, I'll separate the main responsibilities into different files:
+The code is separated into four main parts:
 
-- **Matrix:** A matrix of doubles with the necessary operations.
-- **Dataset:** Stores the data and feature names (headers). Can load data from a CSV file through its constructor.
-- **PCA:** Implements the PCA algorithm.
-- **PCAResult:** Stores the results obtained at each step of the PCA algorithm, so they can be displayed step by step.
-- **UI:** Handles the Raylib interface and visualization.
-- **Maths:** Any math helpers will be stored inside math_utils. 
+- **Matrix:** Matrix representation and operations.
+- **Statistics:** Mathematical functions used by PCA.
+- **PCA:** Fitting, projection, and reconstruction.
+- **UI:** Raylib interface and visualization.
+
 ## Building and Testing
 
-This project uses CMake to configure and build the application, GoogleTest for unit testing, and CTest to run the tests.
-
-### Requirements
-- C++17 compatible compiler
-- CMake 3.20 or newer
-- Git (for downloading dependencies through CMake)
-- Internet connection for the initial dependency download
-
-### Configure
-
-Run from the project root directory:
+The project uses **CMake, GoogleTest, and CTest**, with a Makefile to simplify common commands.
 
 ```bash
-cmake -S . -B build
+make configure   # Configure the project
+make build       # Build the application
+make test        # Build and run tests
+make clean       # Remove build files
 ```
 
-This generates the build files inside the `build` directory and downloads the required dependencies if necessary.
+## What's Next
 
-### Build
+- Explained variance and reconstruction error visualization.
+- UI improvements and clearer step-by-step explanations.
+- Additional testing and numerical stability improvements.
 
-```bash
-cmake --build build
-```
-
-Compiles the application and test executable.
-
-### Run the Application
-
-```bash
-./build/pca_visualizer
-```
-
-The executable location may differ depending on your operating system and CMake generator.
-
-### Run Tests
-
-```bash
-ctest --test-dir build --output-on-failure
-```
-
-Runs all registered tests and displays detailed output for any failures.
-
-### Clean Build
-
-```bash
-cmake --build build --target clean
-```
-
-Removes compiled build outputs while keeping the CMake configuration and downloaded dependencies.
-
-For a completely fresh build, remove the `build` directory and configure again:
-
-```bash
-rm -rf build
-cmake -S . -B build
-cmake --build build
-```
+The project is still a work in progress. For now, I'm focusing on understanding and correctly implementing 2D PCA before considering support for higher-dimensional datasets

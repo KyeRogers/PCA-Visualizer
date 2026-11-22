@@ -39,7 +39,6 @@ add_library(pca_core
     src/statistics.cpp
     src/matrix.cpp
     src/PCA.cpp
-    src/PCAResult.cpp
 )
 
 target_include_directories(pca_core
@@ -50,6 +49,8 @@ target_include_directories(pca_core
 # Main application
 add_executable(pca_visualizer
     src/main.cpp
+    src/ui/PCAVisualizer.cpp
+    src/ui/CsvLoader.cpp
 )
 
 target_link_libraries(pca_visualizer
