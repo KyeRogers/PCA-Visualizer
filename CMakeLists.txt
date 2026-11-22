@@ -66,6 +66,7 @@ if(BUILD_TESTING)
     add_executable(pca_tests
         tests/matrix_tests.cpp
         tests/statistics_tests.cpp
+        tests/PCA_tests.cpp
     )
 
     target_link_libraries(pca_tests
