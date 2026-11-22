@@ -36,6 +36,7 @@ FetchContent_MakeAvailable(googletest)
 # Core library
 add_library(pca_core
     src/dataset.cpp
+    src/preprocessing.cpp
     src/math_utils.cpp
     src/matrix.cpp
     src/PCA.cpp
@@ -65,6 +66,7 @@ if(BUILD_TESTING)
 
     add_executable(pca_tests
         tests/matrix_tests.cpp
+        tests/preprocessing_tests.cpp
     )
 
     target_link_libraries(pca_tests
