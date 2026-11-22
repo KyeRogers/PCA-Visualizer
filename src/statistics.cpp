@@ -110,3 +110,11 @@ EigenResult EigenDecomposeSymmetric2x2(const Matrix& matrix) {
 
   return result;
 }
+
+// projects centred data ont the PCA components
+Matrix ProjectData(const Matrix& centeredData, const Matrix& eigenvectors) {
+  if (centeredData.Cols() != eigenvectors.Rows()) {
+    throw std::invalid_argument("Incorrect dimensions to perform Matrix multiplication");
+  }
+  return centeredData * eigenvectors;
+}

@@ -20,4 +20,8 @@ struct EigenResult {
 };
 
 EigenResult EigenDecomposeSymmetric2x2(const Matrix& matrix);
+
+Matrix ProjectData(const Matrix& centeredData,
+                   const Matrix& eigenvectors);
+                   
 #endif

@@ -305,3 +305,97 @@ TEST(EigenvalueTests, RejectsInvalidInput) {
   EXPECT_THROW(EigenDecomposeSymmetric2x2(nonSymmetric),
                std::invalid_argument);
 }
+
+// A dataset lying entirely along PC1 should have zero
+// coordinates along PC2 after projection.
+TEST(ProjectionTests, ProjectsOntoRotatedBasis) {
+    Matrix centeredData(2, 2);
+
+    centeredData(0, 0) = 2.0;
+    centeredData(0, 1) = 2.0;
+    centeredData(1, 0) = -2.0;
+    centeredData(1, 1) = -2.0;
+
+    const double invSqrt2 = 1.0 / std::sqrt(2.0);
+
+    Matrix eigenvectors(2, 2);
+
+    // PC1 is the first column.
+    eigenvectors(0, 0) = invSqrt2;
+    eigenvectors(1, 0) = invSqrt2;
+
+    // PC2 is the second column.
+    eigenvectors(0, 1) = -invSqrt2;
+    eigenvectors(1, 1) = invSqrt2;
+
+    Matrix projected = ProjectData(centeredData, eigenvectors);
+
+    ASSERT_EQ(projected.Rows(), 2);
+    ASSERT_EQ(projected.Cols(), 2);
+
+    EXPECT_NEAR(projected(0, 0), 2.0 * std::sqrt(2.0), 1e-9);
+    EXPECT_NEAR(projected(0, 1), 0.0, 1e-9);
+
+    EXPECT_NEAR(projected(1, 0), -2.0 * std::sqrt(2.0), 1e-9);
+    EXPECT_NEAR(projected(1, 1), 0.0, 1e-9);
+}
+
+// Projection onto the original coordinate axes should
+// leave the centered data unchanged.
+TEST(ProjectionTests, IdentityBasisPreservesCoordinates) {
+    Matrix centeredData(3, 2);
+
+    centeredData(0, 0) = 1.0;
+    centeredData(0, 1) = 2.0;
+
+    centeredData(1, 0) = -3.0;
+    centeredData(1, 1) = 4.0;
+
+    centeredData(2, 0) = 2.0;
+    centeredData(2, 1) = -6.0;
+
+    Matrix identity(2, 2);
+    identity(0, 0) = 1.0;
+    identity(1, 1) = 1.0;
+
+    Matrix projected = ProjectData(centeredData, identity);
+
+    ASSERT_EQ(projected.Rows(), 3);
+    ASSERT_EQ(projected.Cols(), 2);
+
+    for (int row = 0; row < 3; ++row) {
+        for (int col = 0; col < 2; ++col) {
+            EXPECT_NEAR(
+                projected(row, col),
+                centeredData(row, col),
+                1e-9
+            );
+        }
+    }
+}
+
+// Projecting N observations onto two components should
+// produce an N x 2 matrix.
+TEST(ProjectionTests, PreservesDimensionsWithoutReduction) {
+    Matrix centeredData(100, 2);
+
+    Matrix identity(2, 2);
+    identity(0, 0) = 1.0;
+    identity(1, 1) = 1.0;
+
+    Matrix projected = ProjectData(centeredData, identity);
+
+    EXPECT_EQ(projected.Rows(), 100);
+    EXPECT_EQ(projected.Cols(), 2);
+}
+
+// Incompatible matrix dimensions should be rejected.
+TEST(ProjectionTests, RejectsIncompatibleDimensions) {
+    Matrix centeredData(5, 2);
+    Matrix invalidBasis(3, 2);
+
+    EXPECT_THROW(
+        ProjectData(centeredData, invalidBasis),
+        std::invalid_argument
+    );
+}
